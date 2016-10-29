@@ -130,10 +130,10 @@ class GameScene: SKScene {
         }
         if isTouch{
             //hero.arm.physicsBody?.velocity = .init(dx: 0, dy: -80)
-            //if isCenter.x > 0 {hero.hero.physicsBody?.velocity = CGVector(dx: 300.0, dy: 0.0)}
-            //else {if isCenter.x < 0 {hero.hero.physicsBody?.velocity = CGVector(dx: -300.0, dy: 0.0)}}
-            if isCenter.y > 0 {hero.arm.physicsBody?.velocity = .init(dx: -10, dy: -300)}
-            else {if isCenter.y < 0 {hero.arm.physicsBody?.velocity = .init(dx: -10, dy: 300)}}
+            if isCenter.x > 0 {hero.hero.physicsBody?.velocity = CGVector(dx: 300.0, dy: 0.0)}
+            else {if isCenter.x < 0 {hero.hero.physicsBody?.velocity = CGVector(dx: -300.0, dy: 0.0)}}
+            if isCenter.y > 0 {hero.arm.physicsBody?.velocity = .init(dx: -10, dy: 300)}
+            else {if isCenter.y < 0 {hero.arm.physicsBody?.velocity = .init(dx: -10, dy: -300)}}
         }else {hero.hero.physicsBody?.velocity = .init(dx: 0.0, dy: 0.0)}
         //print(hero.position)
         /*if isCenter.x > 0 {hero.position.x += 3}

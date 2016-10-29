@@ -60,11 +60,10 @@ class Hero:SKNode{
         let move = SKPhysicsBody.init(rectangleOf: .init(width: 200, height: 25))
         move.affectedByGravity = false
         move.isDynamic = true
-        move.mass = 0.05
         arm.physicsBody = move
         self.addChild(arm)
         move.categoryBitMask = ColliderType.Arms
-        //move.collisionBitMask = ColliderType.Shelf | ColliderType.Ground
+        move.collisionBitMask = ColliderType.None
         move.contactTestBitMask = ColliderType.None
         
     }
@@ -105,17 +104,17 @@ class Hero:SKNode{
 
         armJoin.frictionTorque = 10.0
         
-        //armJoin.shouldEnableLimits = true
-        armJoin.upperAngleLimit = -1.57
-        armJoin.lowerAngleLimit = -0.785
+        armJoin.shouldEnableLimits = true
+        armJoin.upperAngleLimit = 1
+        armJoin.lowerAngleLimit = -0.6
         
-        //basketJoin = SKPhysicsJointFixed.joint(withBodyA: arm.physicsBody!, bodyB: basket.physicsBody!, anchor: .init(x:0, y:30))
+        basketJoin = SKPhysicsJointFixed.joint(withBodyA: arm.physicsBody!, bodyB: basket.physicsBody!, anchor: .init(x:0, y:30))
     }
     
     public func add(to scene: SKScene) {
         scene.addChild(self)
         scene.physicsWorld.add(armJoin)
-        //scene.physicsWorld.add(basketJoin)
+        scene.physicsWorld.add(basketJoin)
         //scene.physicsWorld.add(positionJoint)
     }
     
