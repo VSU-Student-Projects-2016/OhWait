@@ -52,7 +52,7 @@ class Ball:SKNode{
         let w = 2048 * 0.009
         ball = SKShapeNode.init(circleOfRadius: CGFloat(w))
         ball.position = CGPoint.zero
-        ball.fillColor = type.color//getRandomColor()
+        ball.fillColor = type.color
         ball.strokeColor = ball.fillColor
         self.addChild(ball)
         

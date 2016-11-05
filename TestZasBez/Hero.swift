@@ -36,7 +36,7 @@ class Hero:SKNode{
         basket.position = .init(x: -130, y: 80)
     }
     
-    func helpArm() -> CGPath {
+    func helpArmLeft() -> CGPath {
         let path = CGMutablePath()
         path.move(to: .init(x: -50, y: 0))
         path.addLine(to: .init(x: -130, y: 50))
@@ -46,19 +46,29 @@ class Hero:SKNode{
         path.closeSubpath()
         return path
     }
+    func helpArmRight() -> CGPath {
+        let path = CGMutablePath()
+        path.move(to: .init(x: -0, y: 0))
+        path.addLine(to: .init(x: 130, y: 50))
+        path.addLine(to: .init(x: 130, y: 30))
+        path.addLine(to: .init(x: 50, y: -30))
+        //path.addLine(to: .init(x: -50, y: 0))
+        path.closeSubpath()
+        return path
+    }
     
     
     func createArm() {
-       //arm = SKShapeNode.init(path: helpArm())
-        arm = SKShapeNode.init(rect: .init(x: -100, y: -12.5, width: 200, height: 25))
+        arm = SKShapeNode.init(path: helpArmLeft())
+        //arm = SKShapeNode.init(rect: .init(x: -100, y: -12.5, width: 200, height: 25))
         arm.fillColor = SKColor.gray
         arm.strokeColor = arm.fillColor
-        arm.position = CGPoint.init(x: -85, y: 30)
+        arm.position = CGPoint.init(x: -0, y: 30)
         
         
-        //let move = SKPhysicsBody.init(polygonFrom: helpArm())
-        let move = SKPhysicsBody.init(rectangleOf: .init(width: 200, height: 25))
-        move.affectedByGravity = false
+        let move = SKPhysicsBody.init(polygonFrom: helpArmRight())
+        //let move = SKPhysicsBody.init(rectangleOf: .init(width: 200, height: 25))
+        //move.affectedByGravity = false
         move.isDynamic = true
         arm.physicsBody = move
         self.addChild(arm)
@@ -71,10 +81,9 @@ class Hero:SKNode{
     
     func createHero() {
         let size = CGSize(width: 150, height: 250)
-        hero = SKShapeNode(rectOf: size)//SKShapeNode.init(path: helpHero())
+        hero = SKShapeNode(rectOf: size)
         hero.fillColor = SKColor.gray
         hero.strokeColor = hero.fillColor
-        //basket = SKSpriteNode(imageNamed: "basket.png")
         self.addChild(hero)
         
         let move = SKPhysicsBody(rectangleOf: size)
@@ -85,7 +94,7 @@ class Hero:SKNode{
         move.mass = 10
         hero.physicsBody = move
         move.categoryBitMask = ColliderType.Hero
-        move.collisionBitMask = /*ColliderType.Circle | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | */ColliderType.Ground | ColliderType.Shelf
+        move.collisionBitMask = ColliderType.Ground | ColliderType.Shelf
         move.contactTestBitMask = ColliderType.None
         
         
@@ -105,10 +114,10 @@ class Hero:SKNode{
         armJoin.frictionTorque = 10.0
         
         armJoin.shouldEnableLimits = true
-        armJoin.upperAngleLimit = 1
-        armJoin.lowerAngleLimit = -0.6
+        armJoin.upperAngleLimit = 0.1
+        armJoin.lowerAngleLimit = -1
         
-        basketJoin = SKPhysicsJointFixed.joint(withBodyA: arm.physicsBody!, bodyB: basket.physicsBody!, anchor: .init(x:0, y:30))
+        basketJoin = SKPhysicsJointFixed.joint(withBodyA: arm.physicsBody!, bodyB: basket.physicsBody!, anchor: .init(x: -130, y:50))
     }
     
     public func add(to scene: SKScene) {

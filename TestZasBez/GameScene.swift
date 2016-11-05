@@ -74,6 +74,33 @@ class GameScene: SKScene {
     }
 
     
+    var joystickStickImageEnabled = true {
+        
+        didSet {
+            
+            let image = joystickStickImageEnabled ? UIImage(named: "jStick") : nil
+            moveAnalogStick.stick.image = image
+            rotateAnalogStick.stick.image = image
+            //setJoystickStickImageBtn.text = joystickStickImageEnabled ? "Remove Stick Images" : "Set Stick Images"
+        }
+    }
+    
+    var joystickSubstrateImageEnabled = true {
+        
+        didSet {
+            
+            let image = joystickSubstrateImageEnabled ? UIImage(named: "jSubstrate") : nil
+            moveAnalogStick.substrate.image = image
+            rotateAnalogStick.substrate.image = image
+           //setJoystickSubstrateImageBtn.text = joystickSubstrateImageEnabled ? "Remove Substrate Images" : "Set Substrate Images"
+            //rotateAnalogStick.
+        }
+    }
+    
+    let moveAnalogStick =  🕹(diameter: 100)
+    let rotateAnalogStick = AnalogJoystick(diameter: 100)
+    
+    
     override func didMove(to view: SKView) {
         let w = self.size.width
         let floor = SKShapeNode.init(rect: CGRect(origin: CGPoint.zero, size: CGSize.init(width: w, height: 32)))
@@ -91,7 +118,7 @@ class GameScene: SKScene {
         movefloor.isDynamic = false
         movefloor.categoryBitMask = ColliderType.Ground
         movefloor.contactTestBitMask = ColliderType.Circle
-        movefloor.collisionBitMask =  ColliderType.Circle | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | ColliderType.Hero //| ColliderType.Arms
+        movefloor.collisionBitMask =  ColliderType.Circle | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | ColliderType.Hero
         
         createAllShelfs()
         //basket = Basket()
@@ -101,14 +128,35 @@ class GameScene: SKScene {
         hero.add(to: self)
         physicsWorld.contactDelegate = self
         view.showsPhysics = true
+        
+        
+        
+        
+        moveAnalogStick.position = CGPoint(x: -self.size.width/2 + 2 * rotateAnalogStick.radius, y: -self.size.height/6 + 5/3 * rotateAnalogStick.radius)
+        addChild(moveAnalogStick)
+        
+        rotateAnalogStick.position = CGPoint(x: self.size.width/2 - 2 * rotateAnalogStick.radius, y: -self.size.height/6 + 5/3 * rotateAnalogStick.radius)
+        addChild(rotateAnalogStick)
+        
+        moveAnalogStick.trackingHandler = { [unowned self] (data: AnalogJoystickData) in
+            self.hero.hero.physicsBody?.velocity = CGVector(dx: 10 * data.velocity.x, dy: 0.0)
+        }
+        
+        rotateAnalogStick.trackingHandler = { [unowned self] data in
+            self.hero.arm.physicsBody?.velocity = .init(dx: -100, dy: 15 * data.velocity.y)
+        }
+        
+        view.isMultipleTouchEnabled = true
+        
     }
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {
+       /* for t in touches {
             isCenter = (toPoint: t.location(in: self)).toPoint
             isTouch = true;
-        }
+        }*/
+
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -128,19 +176,13 @@ class GameScene: SKScene {
         if (count%180==0){
             self.createBall()
         }
-        if isTouch{
+        /*if isTouch{
             //hero.arm.physicsBody?.velocity = .init(dx: 0, dy: -80)
             if isCenter.x > 0 {hero.hero.physicsBody?.velocity = CGVector(dx: 300.0, dy: 0.0)}
-            else {if isCenter.x < 0 {hero.hero.physicsBody?.velocity = CGVector(dx: -300.0, dy: 0.0)}}
-            if isCenter.y > 0 {hero.arm.physicsBody?.velocity = .init(dx: -10, dy: 300)}
-            else {if isCenter.y < 0 {hero.arm.physicsBody?.velocity = .init(dx: -10, dy: -300)}}
-        }else {hero.hero.physicsBody?.velocity = .init(dx: 0.0, dy: 0.0)}
-        //print(hero.position)
-        /*if isCenter.x > 0 {hero.position.x += 3}
-        else {if isCenter.x < 0 {hero.position.x -= 3}}
-        if isCenter.y > 0 {hero.basket.position.y += 3}
-        else {if isCenter.y < 0 {hero.basket.position.y -= 3}}
-        }*/
+            else {if isCenter.x < 0 {hero.hero.physicsBody?.velocity = CGVector(dx: -300 * velocity.0, dy: 0.0)}}
+            if isCenter.y > 0 {hero.arm.physicsBody?.velocity = .init(dx: -100, dy: 600)}
+            else {if isCenter.y < 0 {hero.arm.physicsBody?.velocity = .init(dx: -100, dy: -600)}}
+        }else {hero.hero.physicsBody?.velocity = .init(dx: 0.0, dy: 0.0)}*/
         
     }
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AE09A9581DBB6EE600C858D3 /* Arms.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE09A9571DBB6EE600C858D3 /* Arms.swift */; };
+		AE4F1AE41DCDDE1E0013B389 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */; };
 		AED804811D96AB98003ADCBC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED804801D96AB98003ADCBC /* AppDelegate.swift */; };
 		AED804831D96AB98003ADCBC /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = AED804821D96AB98003ADCBC /* GameScene.sks */; };
 		AED804851D96AB98003ADCBC /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = AED804841D96AB98003ADCBC /* Actions.sks */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		AE09A9571DBB6EE600C858D3 /* Arms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arms.swift; sourceTree = "<group>"; };
+		AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnalogJoystick.swift; path = "../../../Desktop/Swift-SpriteKit-Analog-Stick-master/AnalogStick Demo/AnalogStick Demo/AnalogJoystick.swift"; sourceTree = "<group>"; };
 		AED8047D1D96AB98003ADCBC /* TestZasBez.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestZasBez.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED804801D96AB98003ADCBC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AED804821D96AB98003ADCBC /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				AED804801D96AB98003ADCBC /* AppDelegate.swift */,
 				AED804821D96AB98003ADCBC /* GameScene.sks */,
 				AED804841D96AB98003ADCBC /* Actions.sks */,
+				AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */,
 				AEFD21751DB246850030625B /* Shelf.swift */,
 				AEFD21731DB230830030625B /* Basket.swift */,
 				AEFD21771DB24DAB0030625B /* Ball.swift */,
@@ -163,6 +166,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE09A9581DBB6EE600C858D3 /* Arms.swift in Sources */,
+				AE4F1AE41DCDDE1E0013B389 /* AnalogJoystick.swift in Sources */,
 				AEFD21781DB24DAB0030625B /* Ball.swift in Sources */,
 				AED804871D96AB98003ADCBC /* GameScene.swift in Sources */,
 				AEFD21761DB246850030625B /* Shelf.swift in Sources */,
