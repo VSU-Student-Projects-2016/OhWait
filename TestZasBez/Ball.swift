@@ -11,6 +11,7 @@ enum Consumable {
     case coin
     case heart
     case bomb
+    case clock
     
     var color: SKColor {
         switch self {
@@ -20,6 +21,8 @@ enum Consumable {
             return SKColor.red
         case .bomb:
             return SKColor.black
+        case .clock:
+            return SKColor.green
         }
     }
     var mask: UInt32{
@@ -30,6 +33,8 @@ enum Consumable {
             return ColliderType.Heart
         case .bomb:
             return ColliderType.Bomb
+        case .clock:
+            return ColliderType.Clock
         }
     }
 }
@@ -44,6 +49,8 @@ class Ball:SKNode{
             type = .bomb
         } else if arc4random() % 17 == 0 {
             type = .heart
+        } else if arc4random() % 19 == 0 {
+            type = .clock
         } else {
             type = .coin
         }

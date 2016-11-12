@@ -39,7 +39,8 @@ class GameScene: SKScene {
     var count = 0
     var score = 0
     var lifes = 3
-    
+    var positionAdd:CGFloat = 20.0
+    public var lifesIndex = [SKShapeNode]()
     
     func createAllShelfs(){
         shelfLeftUp = ShelfLeft()
@@ -124,14 +125,11 @@ class GameScene: SKScene {
         //basket = Basket()
         //self.addChild(basket)
         hero = Hero()
-        hero.position = .init(x: 0, y: -30)
+        hero.hero.position = .init(x: 0, y: -30)
         hero.add(to: self)
         physicsWorld.contactDelegate = self
         view.showsPhysics = true
-        
-        
-        
-        
+
         moveAnalogStick.position = CGPoint(x: -self.size.width/2 + 2 * rotateAnalogStick.radius, y: -self.size.height/6 + 5/3 * rotateAnalogStick.radius)
         addChild(moveAnalogStick)
         
@@ -143,11 +141,39 @@ class GameScene: SKScene {
         }
         
         rotateAnalogStick.trackingHandler = { [unowned self] data in
-            self.hero.arm.physicsBody?.velocity = .init(dx: -100, dy: 15 * data.velocity.y)
+            guard abs(data.velocity.x) > 4.0 else {
+                return
+            }
+            
+            if data.velocity.x < 0 {
+                self.hero.turn(to: .left)
+                self.hero.arm.physicsBody?.velocity = .init(dx: -100, dy: 15 * data.velocity.y)
+
+            } else {
+                self.hero.turn(to: .right)
+                self.hero.arm.physicsBody?.velocity = .init(dx: 100, dy: 15 * data.velocity.y)
+            }
         }
         
         view.isMultipleTouchEnabled = true
         
+        
+        
+        
+       
+        for i in 0..<3 {
+            
+            lifesIndex.append(SKShapeNode.init(circleOfRadius: 10))
+            lifesIndex[i].fillColor = SKColor.purple
+            lifesIndex[i].strokeColor = lifesIndex[i].fillColor
+            lifesIndex[i].position = CGPoint(x: -self.size.width/2 + positionAdd, y: 190)
+            
+            addChild(lifesIndex[i])
+            
+            positionAdd = positionAdd + 30.0
+            
+        }
+   
     }
     
     
@@ -198,15 +224,6 @@ extension GameScene: SKPhysicsContactDelegate {
             }
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Ground | ColliderType.Circle{
-            /*if contact.bodyA.categoryBitMask == ColliderType.Circle{
-                contact.bodyA.contactTestBitMask = ColliderType.None
-                contact.bodyA.node?.physicsBody = contact.bodyA
-            }
-            else{
-                contact.bodyB.contactTestBitMask = ColliderType.None
-                contact.bodyB.node?.physicsBody = contact.bodyB
-            }*/
-            
             let ball: Ball
             if let ba = contact.bodyA.node?.parent as? Ball {
                 ball = ba
@@ -221,15 +238,27 @@ extension GameScene: SKPhysicsContactDelegate {
             print("lifes: ",lifes)
             if lifes < 0{
                 print("Конец игры")
+                scene?.isPaused = true
+            }else {
+                lifesIndex[lifes].removeFromParent()
             }
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Bomb{
-            print("Конец игры") }
+            print("Конец игры")
+            scene?.isPaused = true
+        }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Heart{
             if contact.bodyA.categoryBitMask == ColliderType.Heart{
                 contact.bodyA.node?.removeFromParent()
             } else{ contact.bodyB.node?.removeFromParent()}
-            if (lifes < 3) {lifes += 1}
+            if (lifes < 3) {
+                addChild(lifesIndex[lifes])
+                lifes += 1}
                 print("lifes: ",lifes) }
+        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Clock{
+            if contact.bodyA.categoryBitMask == ColliderType.Clock{
+                contact.bodyA.node?.removeFromParent()
+            } else{ contact.bodyB.node?.removeFromParent()}
+            print("Время") }
     }
 }
