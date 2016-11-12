@@ -216,9 +216,14 @@ class GameScene: SKScene {
 extension GameScene: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Circle{
+            let pos = contact.contactPoint
             if contact.bodyA.categoryBitMask == ColliderType.Circle{
                 contact.bodyA.node?.removeFromParent()
-            } else{ contact.bodyB.node?.removeFromParent()
+            } else{
+                let particles = SKEmitterNode(fileNamed: "CoinEffects")
+                particles?.position = pos
+                self.addChild(particles!)
+                contact.bodyB.node?.removeFromParent()
                 score += 1
                 print("Score: ", score)
             }
@@ -244,15 +249,25 @@ extension GameScene: SKPhysicsContactDelegate {
             }
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Bomb{
+            for _ in 0..<15{
+                let particles = SKEmitterNode(fileNamed: "HeardEffects")
+                particles?.position = CGPoint(x: CGFloat.random(-self.size.width/2...self.size.width/2), y: CGFloat.random(within: -190...190))
+                self.addChild(particles!)
+            }
             print("Конец игры")
             scene?.isPaused = true
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Heart{
+            let pos = contact.contactPoint
             if contact.bodyA.categoryBitMask == ColliderType.Heart{
                 contact.bodyA.node?.removeFromParent()
             } else{ contact.bodyB.node?.removeFromParent()}
+            let particles = SKEmitterNode(fileNamed: "HeardEffects")
+            particles?.position = pos
+            self.addChild(particles!)
             if (lifes < 3) {
                 addChild(lifesIndex[lifes])
+                contact.bodyB.node?.removeFromParent()
                 lifes += 1}
                 print("lifes: ",lifes) }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Clock{
