@@ -10,9 +10,12 @@
 		AE09A9581DBB6EE600C858D3 /* Arms.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE09A9571DBB6EE600C858D3 /* Arms.swift */; };
 		AE1456271DD74A9F008705E5 /* CoinEffects.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE1456251DD74A9F008705E5 /* CoinEffects.sks */; };
 		AE1456281DD74A9F008705E5 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = AE1456261DD74A9F008705E5 /* spark.png */; };
-		AE14562A1DD751B5008705E5 /* HeardEffects.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE1456291DD751B5008705E5 /* HeardEffects.sks */; };
+		AE14562A1DD751B5008705E5 /* HeartEffects.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE1456291DD751B5008705E5 /* HeartEffects.sks */; };
 		AE14562C1DD7532C008705E5 /* BombEffects.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE14562B1DD7532C008705E5 /* BombEffects.sks */; };
 		AE14562E1DD75651008705E5 /* Randoms.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14562D1DD75651008705E5 /* Randoms.swift */; };
+		AE2C7F051DE076D40077C5ED /* PlayScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2C7F041DE076D40077C5ED /* PlayScene.swift */; };
+		AE2C7F071DE07A850077C5ED /* PlayScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE2C7F061DE07A850077C5ED /* PlayScene.sks */; };
+		AE2C7F091DE08DCE0077C5ED /* TouchCap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2C7F081DE08DCE0077C5ED /* TouchCap.swift */; };
 		AE4F1AE41DCDDE1E0013B389 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */; };
 		AED804811D96AB98003ADCBC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED804801D96AB98003ADCBC /* AppDelegate.swift */; };
 		AED804831D96AB98003ADCBC /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = AED804821D96AB98003ADCBC /* GameScene.sks */; };
@@ -32,9 +35,12 @@
 		AE09A9571DBB6EE600C858D3 /* Arms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arms.swift; sourceTree = "<group>"; };
 		AE1456251DD74A9F008705E5 /* CoinEffects.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CoinEffects.sks; sourceTree = "<group>"; };
 		AE1456261DD74A9F008705E5 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
-		AE1456291DD751B5008705E5 /* HeardEffects.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = HeardEffects.sks; sourceTree = "<group>"; };
+		AE1456291DD751B5008705E5 /* HeartEffects.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = HeartEffects.sks; sourceTree = "<group>"; };
 		AE14562B1DD7532C008705E5 /* BombEffects.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BombEffects.sks; sourceTree = "<group>"; };
 		AE14562D1DD75651008705E5 /* Randoms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Randoms.swift; sourceTree = "<group>"; };
+		AE2C7F041DE076D40077C5ED /* PlayScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayScene.swift; sourceTree = "<group>"; };
+		AE2C7F061DE07A850077C5ED /* PlayScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = PlayScene.sks; sourceTree = "<group>"; };
+		AE2C7F081DE08DCE0077C5ED /* TouchCap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchCap.swift; sourceTree = "<group>"; };
 		AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnalogJoystick.swift; path = "../../../Desktop/Swift-SpriteKit-Analog-Stick-master/AnalogStick Demo/AnalogStick Demo/AnalogJoystick.swift"; sourceTree = "<group>"; };
 		AED8047D1D96AB98003ADCBC /* TestZasBez.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestZasBez.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED804801D96AB98003ADCBC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +88,8 @@
 		AED8047F1D96AB98003ADCBC /* TestZasBez */ = {
 			isa = PBXGroup;
 			children = (
+				AE2C7F061DE07A850077C5ED /* PlayScene.sks */,
+				AE2C7F041DE076D40077C5ED /* PlayScene.swift */,
 				AED804801D96AB98003ADCBC /* AppDelegate.swift */,
 				AED804821D96AB98003ADCBC /* GameScene.sks */,
 				AED804841D96AB98003ADCBC /* Actions.sks */,
@@ -90,8 +98,9 @@
 				AEFD21731DB230830030625B /* Basket.swift */,
 				AEFD21771DB24DAB0030625B /* Ball.swift */,
 				AEFD21791DB2536A0030625B /* Hero.swift */,
+				AE2C7F081DE08DCE0077C5ED /* TouchCap.swift */,
 				AE14562D1DD75651008705E5 /* Randoms.swift */,
-				AE1456291DD751B5008705E5 /* HeardEffects.sks */,
+				AE1456291DD751B5008705E5 /* HeartEffects.sks */,
 				AE1456251DD74A9F008705E5 /* CoinEffects.sks */,
 				AE1456261DD74A9F008705E5 /* spark.png */,
 				AE14562B1DD7532C008705E5 /* BombEffects.sks */,
@@ -165,10 +174,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE2C7F071DE07A850077C5ED /* PlayScene.sks in Resources */,
 				AED8048C1D96AB98003ADCBC /* Main.storyboard in Resources */,
 				AED804831D96AB98003ADCBC /* GameScene.sks in Resources */,
 				AED8048E1D96AB98003ADCBC /* Assets.xcassets in Resources */,
-				AE14562A1DD751B5008705E5 /* HeardEffects.sks in Resources */,
+				AE14562A1DD751B5008705E5 /* HeartEffects.sks in Resources */,
 				AE1456281DD74A9F008705E5 /* spark.png in Resources */,
 				AED804911D96AB98003ADCBC /* LaunchScreen.storyboard in Resources */,
 				AE14562C1DD7532C008705E5 /* BombEffects.sks in Resources */,
@@ -188,11 +198,13 @@
 				AE4F1AE41DCDDE1E0013B389 /* AnalogJoystick.swift in Sources */,
 				AEFD21781DB24DAB0030625B /* Ball.swift in Sources */,
 				AED804871D96AB98003ADCBC /* GameScene.swift in Sources */,
+				AE2C7F091DE08DCE0077C5ED /* TouchCap.swift in Sources */,
 				AEFD21761DB246850030625B /* Shelf.swift in Sources */,
 				AEFD21741DB230830030625B /* Basket.swift in Sources */,
 				AE14562E1DD75651008705E5 /* Randoms.swift in Sources */,
 				AEFD217A1DB2536A0030625B /* Hero.swift in Sources */,
 				AED804891D96AB98003ADCBC /* GameViewController.swift in Sources */,
+				AE2C7F051DE076D40077C5ED /* PlayScene.swift in Sources */,
 				AED804811D96AB98003ADCBC /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
