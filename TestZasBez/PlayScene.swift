@@ -36,10 +36,13 @@ class PlayScene: SKScene {
     private var shelfRigthDown: ShelfRight!
     private var isCenter:CGPoint = CGPoint.zero
     private var isTouch:Bool = false
-    private var touchCap: TouchCap!
+    private var touchCap: UIView?
+    private var gameover: UIView?
+    var isGameOver = false
     
     var count = 0
     var score = 0
+    var scorelabel: UILabel?
     var lifes = 3
     var lifesIndex = [SKShapeNode]()
     
@@ -48,6 +51,7 @@ class PlayScene: SKScene {
     
     var pauseBigBtn: UIButton!
     var pauseBtn: UIButton!
+    var restartBtn: UIButton!
     var exitBtn: UIButton!
     
     func createAllShelfs(){
@@ -109,19 +113,39 @@ class PlayScene: SKScene {
     let moveAnalogStick =  🕹(diameter: 100)
     let rotateAnalogStick = AnalogJoystick(diameter: 100)
     
+    func gameOver(){
+        self.isPaused = !self.isPaused
+        gameover = GameOverScene(frame: (view?.frame)!, score: Int32(self.score))
+        gameover?.backgroundColor = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.4)
+        gameover?.isUserInteractionEnabled = true
+        pauseBtn.removeFromSuperview()
+        restartBtn.backgroundColor = SKColor.yellow
+        exitBtn.backgroundColor = SKColor.purple
+        gameover?.addSubview(restartBtn)
+        gameover?.addSubview(exitBtn)
+        scorelabel?.removeFromSuperview()
+        self.view?.addSubview(gameover!)
+    }
+    
     func pauseBtnPressed(_ sender: UIButton!){
         self.isPaused = !self.isPaused
         if self.isPaused{
             pauseBtn.removeFromSuperview()
-            self.view?.addSubview(exitBtn)
-            self.view?.addSubview(pauseBigBtn)
-            self.addChild(touchCap!)
+            self.view?.addSubview(touchCap!)
         }
         else {
-            exitBtn.removeFromSuperview()
-            pauseBigBtn.removeFromSuperview()
+            touchCap?.removeFromSuperview()
             self.view?.addSubview(pauseBtn)
-            touchCap?.removeFromParent()
+        }
+    }
+    
+    func restartBtnPressed(_ sender: UIButton!) {
+        if let scene = SKScene(fileNamed: "PlayScene") {
+            scorelabel?.removeFromSuperview()
+            scene.scaleMode = .aspectFill
+            touchCap?.removeFromSuperview()
+            gameover?.removeFromSuperview()
+            view?.presentScene(scene)
         }
     }
     
@@ -132,34 +156,51 @@ class PlayScene: SKScene {
             scene.size = (skView?.bounds.size)!
             scene.scaleMode = .aspectFill
             skView?.presentScene(scene)
-            exitBtn.removeFromSuperview()
-            pauseBigBtn.removeFromSuperview()
+            touchCap?.removeFromSuperview()
+            gameover?.removeFromSuperview()
         }
     }
     
     override func didMove(to view: SKView) {
-        
-        touchCap = TouchCap()
-        touchCap.
-        
-        pauseBtn = UIButton(frame: CGRect(x: view.frame.maxX-80, y: view.frame.minY - 40, width: 100.0, height: 100.0))
+        pauseBtn = UIButton(frame: CGRect(x: view.frame.maxX-80, y: view.frame.minY - 10, width: 100.0, height: 40.0))
         pauseBtn.setTitle("pause", for: .normal)
         pauseBtn.setTitleColor(.yellow ,for: .normal)
         pauseBtn.addTarget(self, action: #selector(self.pauseBtnPressed(_:)), for: .touchUpInside)
         self.view?.addSubview(pauseBtn)
         
-        pauseBigBtn = UIButton(frame: CGRect(x: view.frame.midX - 50, y: view.frame.midY - 100, width: 100.0, height: 100.0))
-        pauseBigBtn.setTitle("pause", for: .normal)
+        pauseBigBtn = UIButton(frame: CGRect(x: view.frame.midX - 50, y: view.frame.midY - 80, width: 100.0, height: 40.0))
+        pauseBigBtn.setTitle("resume", for: .normal)
         pauseBigBtn.setTitleColor(.yellow ,for: .normal)
         pauseBigBtn.addTarget(self, action: #selector(self.pauseBtnPressed(_:)), for: .touchUpInside)
         
-        exitBtn = UIButton(frame: CGRect(x: view.frame.midX - 50, y: view.frame.midY - 50, width: 100.0, height: 100.0))
+        restartBtn = UIButton(frame: CGRect(x: view.frame.midX - 50, y: view.frame.midY - 40, width: 100.0, height: 40.0))
+        restartBtn.setTitle("restart", for: .normal)
+        restartBtn.setTitleColor(.green ,for: .normal)
+        restartBtn.addTarget(self, action: #selector(self.restartBtnPressed(_:)), for: .touchUpInside)
+        
+        exitBtn = UIButton(frame: CGRect(x: view.frame.midX - 50, y: view.frame.midY, width: 100.0, height: 40.0))
         exitBtn.setTitle("Exit", for: .normal)
         exitBtn.setTitleColor(.red, for: .normal)
         exitBtn.addTarget(self, action: #selector(self.exitBtnPressed(_:)), for: .touchUpInside)
         
-        let w = self.size.width
         
+        touchCap = TouchCap(frame: view.frame)
+        guard let touchCap = self.touchCap else {
+            fatalError("Touch cap must be allocated")
+        }
+        touchCap.backgroundColor = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.4)
+        touchCap.isUserInteractionEnabled = true
+        touchCap.addSubview(exitBtn)
+        touchCap.addSubview(restartBtn)
+        touchCap.addSubview(pauseBigBtn)
+        
+        scorelabel = UILabel(frame: CGRect(x: view.frame.midX, y: view.frame.minY - 40, width: 100.0, height: 100.0))
+        
+        scorelabel?.textColor = SKColor.white
+        scorelabel?.text = String(score)
+        self.view?.addSubview(scorelabel!)
+        
+        let w = self.size.width
         let floor = SKShapeNode.init(rect: CGRect(origin: CGPoint.zero, size: CGSize.init(width: w, height: 32)))
         floor.position = CGPoint(x: -self.size.width/2, y: -214)
         floor.fillColor = SKColor.white
@@ -276,6 +317,7 @@ class PlayScene: SKScene {
 
 extension PlayScene: SKPhysicsContactDelegate {
     func didBegin(_ contact:SKPhysicsContact) {
+        if isGameOver{ return }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Circle{
             let pos = contact.contactPoint
             if contact.bodyA.categoryBitMask == ColliderType.Circle{
@@ -286,6 +328,7 @@ extension PlayScene: SKPhysicsContactDelegate {
                 self.addChild(particles!)
                 contact.bodyB.node?.removeFromParent()
                 score += 1
+                scorelabel?.text = String(score)
                 print("Score: ", score)
             }
         }
@@ -310,8 +353,7 @@ extension PlayScene: SKPhysicsContactDelegate {
                 }
                 print("Конец игры")
                 run(SKAction.sequence([SKAction.wait(forDuration: 2.5), SKAction.run {
-                    self.scene?.isPaused = true
-                    self.pauseBtn.removeFromSuperview()}]))
+                    self.gameOver()}]))
             }else {
                 lifesIndex[lifes].removeFromParent()
             }
@@ -325,8 +367,8 @@ extension PlayScene: SKPhysicsContactDelegate {
             print("Конец игры")
             
             run(SKAction.sequence([SKAction.wait(forDuration: 2.5), SKAction.run {
-                self.scene?.isPaused = true
-                self.pauseBtn.removeFromSuperview()}]))
+                //self.scene?.isPaused = true
+                self.gameOver()}]))
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Heart{
             let pos = contact.contactPoint
@@ -340,12 +382,14 @@ extension PlayScene: SKPhysicsContactDelegate {
                 addChild(lifesIndex[lifes])
                 contact.bodyB.node?.removeFromParent()
                 lifes += 1}
-                print("lifes: ",lifes) }
+                print("lifes: ",lifes)
+        }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Clock{
             if contact.bodyA.categoryBitMask == ColliderType.Clock{
                 contact.bodyA.node?.removeFromParent()
             } else{ contact.bodyB.node?.removeFromParent()}
-            print("Время") }
+            print("Время")
+        }
     }
 }
 
