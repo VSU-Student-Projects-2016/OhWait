@@ -6,7 +6,9 @@
 //  Copyright © 2016 VSU. All rights reserved.
 //
 
+import Foundation
 import SpriteKit
+
 enum Consumable {
     case coin
     case heart
@@ -47,9 +49,9 @@ class Ball:SKNode{
         let type: Consumable
         if arc4random() % 100 > 95 {
             type = .bomb
-        } else if arc4random() % 17 == 0 {
+        } else if arc4random() % 29 == 0 {
             type = .heart
-        } else if arc4random() % 19 == 0 {
+        } else if arc4random() % 5 == 0 {
             type = .clock
         } else {
             type = .coin

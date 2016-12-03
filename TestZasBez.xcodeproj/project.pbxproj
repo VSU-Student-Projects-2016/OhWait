@@ -17,6 +17,11 @@
 		AE2C7F071DE07A850077C5ED /* PlayScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE2C7F061DE07A850077C5ED /* PlayScene.sks */; };
 		AE2C7F091DE08DCE0077C5ED /* TouchCap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2C7F081DE08DCE0077C5ED /* TouchCap.swift */; };
 		AE4F1AE41DCDDE1E0013B389 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */; };
+		AEBC4C771DF2FD4A00342612 /* HEART.wav in Resources */ = {isa = PBXBuildFile; fileRef = AEBC4C761DF2FD4A00342612 /* HEART.wav */; };
+		AEBC4C791DF2FE6700342612 /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBC4C781DF2FE6700342612 /* Sounds.swift */; };
+		AEBC4C7B1DF3039E00342612 /* EAT.wav in Resources */ = {isa = PBXBuildFile; fileRef = AEBC4C7A1DF3039E00342612 /* EAT.wav */; };
+		AEBC4C7D1DF303A300342612 /* CLOCK.wav in Resources */ = {isa = PBXBuildFile; fileRef = AEBC4C7C1DF303A300342612 /* CLOCK.wav */; };
+		AEBC4C7F1DF303A800342612 /* BOMB.wav in Resources */ = {isa = PBXBuildFile; fileRef = AEBC4C7E1DF303A800342612 /* BOMB.wav */; };
 		AED804811D96AB98003ADCBC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED804801D96AB98003ADCBC /* AppDelegate.swift */; };
 		AED804831D96AB98003ADCBC /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = AED804821D96AB98003ADCBC /* GameScene.sks */; };
 		AED804851D96AB98003ADCBC /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = AED804841D96AB98003ADCBC /* Actions.sks */; };
@@ -43,6 +48,11 @@
 		AE2C7F061DE07A850077C5ED /* PlayScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = PlayScene.sks; sourceTree = "<group>"; };
 		AE2C7F081DE08DCE0077C5ED /* TouchCap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchCap.swift; sourceTree = "<group>"; };
 		AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnalogJoystick.swift; path = "../../../Desktop/Swift-SpriteKit-Analog-Stick-master/AnalogStick Demo/AnalogStick Demo/AnalogJoystick.swift"; sourceTree = "<group>"; };
+		AEBC4C761DF2FD4A00342612 /* HEART.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = HEART.wav; path = Sounds/HEART.wav; sourceTree = "<group>"; };
+		AEBC4C781DF2FE6700342612 /* Sounds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sounds.swift; sourceTree = "<group>"; };
+		AEBC4C7A1DF3039E00342612 /* EAT.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = EAT.wav; path = Sounds/EAT.wav; sourceTree = "<group>"; };
+		AEBC4C7C1DF303A300342612 /* CLOCK.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = CLOCK.wav; path = Sounds/CLOCK.wav; sourceTree = "<group>"; };
+		AEBC4C7E1DF303A800342612 /* BOMB.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = BOMB.wav; path = Sounds/BOMB.wav; sourceTree = "<group>"; };
 		AED8047D1D96AB98003ADCBC /* TestZasBez.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestZasBez.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED804801D96AB98003ADCBC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AED804821D96AB98003ADCBC /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -100,6 +110,7 @@
 				AEFD21751DB246850030625B /* Shelf.swift */,
 				AEFD21731DB230830030625B /* Basket.swift */,
 				AEFD21771DB24DAB0030625B /* Ball.swift */,
+				AEBC4C781DF2FE6700342612 /* Sounds.swift */,
 				AEFD21791DB2536A0030625B /* Hero.swift */,
 				AE2C7F081DE08DCE0077C5ED /* TouchCap.swift */,
 				AE14562D1DD75651008705E5 /* Randoms.swift */,
@@ -114,6 +125,10 @@
 				AED8048D1D96AB98003ADCBC /* Assets.xcassets */,
 				AED8048F1D96AB98003ADCBC /* LaunchScreen.storyboard */,
 				AED804921D96AB98003ADCBC /* Info.plist */,
+				AEBC4C761DF2FD4A00342612 /* HEART.wav */,
+				AEBC4C7A1DF3039E00342612 /* EAT.wav */,
+				AEBC4C7C1DF303A300342612 /* CLOCK.wav */,
+				AEBC4C7E1DF303A800342612 /* BOMB.wav */,
 			);
 			path = TestZasBez;
 			sourceTree = "<group>";
@@ -177,16 +192,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEBC4C7F1DF303A800342612 /* BOMB.wav in Resources */,
 				AE2C7F071DE07A850077C5ED /* PlayScene.sks in Resources */,
 				AED8048C1D96AB98003ADCBC /* Main.storyboard in Resources */,
 				AED804831D96AB98003ADCBC /* GameScene.sks in Resources */,
+				AEBC4C7D1DF303A300342612 /* CLOCK.wav in Resources */,
 				AED8048E1D96AB98003ADCBC /* Assets.xcassets in Resources */,
 				AE14562A1DD751B5008705E5 /* HeartEffects.sks in Resources */,
 				AE1456281DD74A9F008705E5 /* spark.png in Resources */,
 				AED804911D96AB98003ADCBC /* LaunchScreen.storyboard in Resources */,
 				AE14562C1DD7532C008705E5 /* BombEffects.sks in Resources */,
 				AE1456271DD74A9F008705E5 /* CoinEffects.sks in Resources */,
+				AEBC4C7B1DF3039E00342612 /* EAT.wav in Resources */,
 				AED804851D96AB98003ADCBC /* Actions.sks in Resources */,
+				AEBC4C771DF2FD4A00342612 /* HEART.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +227,7 @@
 				AEF2B6061DE99A3E009DFF6D /* GameOverScene.swift in Sources */,
 				AEFD217A1DB2536A0030625B /* Hero.swift in Sources */,
 				AED804891D96AB98003ADCBC /* GameViewController.swift in Sources */,
+				AEBC4C791DF2FE6700342612 /* Sounds.swift in Sources */,
 				AE2C7F051DE076D40077C5ED /* PlayScene.swift in Sources */,
 				AED804811D96AB98003ADCBC /* AppDelegate.swift in Sources */,
 			);

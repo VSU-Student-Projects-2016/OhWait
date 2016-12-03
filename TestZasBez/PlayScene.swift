@@ -24,6 +24,10 @@ public struct ColliderType {
     public static var Arms: UInt32 = 0b100000000
 }
 
+
+
+let GAME_LOOP_ACTION_TAG = "GAME_LOOP_ACTION_TAG"
+
 class PlayScene: SKScene {
     
     private var spinnyNode : SKShapeNode?
@@ -48,11 +52,38 @@ class PlayScene: SKScene {
     
     var positionAdd:CGFloat = 20.0
     var difficulty: Int32 = 1
+    var catchTime = false
+    var countBalls: CGFloat = 0
+    var spawnTimeInterval: TimeInterval = 3.0
     
     var pauseBigBtn: UIButton!
     var pauseBtn: UIButton!
     var restartBtn: UIButton!
     var exitBtn: UIButton!
+    
+    func increaseDifficulty() {
+        if (score % 20 == 0){
+            difficulty += 1
+            
+            removeAction(forKey: GAME_LOOP_ACTION_TAG)
+            spawnTimeInterval -= 0.3
+            
+            if spawnTimeInterval < 0.6 {
+                spawnTimeInterval += TimeInterval.random(1.0, 1.5)
+            }
+            
+            beginGameLoop()
+        }
+    }
+    
+    func beginGameLoop() {
+        let wait = SKAction.wait(forDuration: spawnTimeInterval)
+        let spawn = SKAction.run {
+            self.createBall()
+        }
+        let action = SKAction.repeatForever(SKAction.sequence([wait, spawn]))
+        run(action, withKey: GAME_LOOP_ACTION_TAG)
+    }
     
     func createAllShelfs(){
         shelfLeftUp = ShelfLeft()
@@ -265,7 +296,8 @@ class PlayScene: SKScene {
             
         }
         
-        run(SKAction.repeatForever(SKAction.sequence([SKAction.wait(forDuration: 10.0), SKAction.run { self.difficulty+=1 }])))
+        beginGameLoop()
+        //run(SKAction.repeatForever(SKAction.sequence([SKAction.wait(forDuration: 10.0), SKAction.run { self.difficulty+=1 }])))
     }
     
     
@@ -287,50 +319,33 @@ class PlayScene: SKScene {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         isTouch = false
     }
-        
-    override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
-        
-       /*let action = SKAction.sequence([SKAction.wait(forDuration: 2.0), SKAction.run {
-            for _ in 0...Int32.random(1, Int(self.difficulty)) {
-                run(SKAction.sequence([SKAction.wait(forDuration: TimeInterval.random(0.0, 0.2)), SKAction.run { self.createBall() }]))
-                
-            }
-            }, SKAction.run {
-                
-            }])*/
-        count+=1
-        if (count%180==0){
-            print(difficulty)
-            self.createBall()
-        }
-        /*if isTouch{
-            //hero.arm.physicsBody?.velocity = .init(dx: 0, dy: -80)
-            if isCenter.x > 0 {hero.hero.physicsBody?.velocity = CGVector(dx: 300.0, dy: 0.0)}
-            else {if isCenter.x < 0 {hero.hero.physicsBody?.velocity = CGVector(dx: -300 * velocity.0, dy: 0.0)}}
-            if isCenter.y > 0 {hero.arm.physicsBody?.velocity = .init(dx: -100, dy: 600)}
-            else {if isCenter.y < 0 {hero.arm.physicsBody?.velocity = .init(dx: -100, dy: -600)}}
-        }else {hero.hero.physicsBody?.velocity = .init(dx: 0.0, dy: 0.0)}*/
-        
-    }
 }
 
 extension PlayScene: SKPhysicsContactDelegate {
     func didBegin(_ contact:SKPhysicsContact) {
+        
         if isGameOver{ return }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Circle{
             let pos = contact.contactPoint
             if contact.bodyA.categoryBitMask == ColliderType.Circle{
                 contact.bodyA.node?.removeFromParent()
-            } else{
-                let particles = SKEmitterNode(fileNamed: "CoinEffects")
-                particles?.position = pos
-                self.addChild(particles!)
-                contact.bodyB.node?.removeFromParent()
-                score += 1
-                scorelabel?.text = String(score)
-                print("Score: ", score)
-            }
+            } else{ contact.bodyB.node?.removeFromParent()}
+            
+            let particles = SKEmitterNode(fileNamed: "CoinEffects")
+            particles?.position = pos
+            self.addChild(particles!)
+            
+            let coinSound = SKAudioNode()
+            coinSound.autoplayLooped = false
+            self.addChild(coinSound)
+            let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_EAT, waitForCompletion: true)
+            let remove = SKAction.removeFromParent()
+            coinSound.run(SKAction.sequence([playSound, remove]))
+            
+            score += 1
+            scorelabel?.text = String(score)
+            print("Score: ", score)
+            increaseDifficulty()
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Ground | ColliderType.Circle{
             let ball: Ball
@@ -366,8 +381,14 @@ extension PlayScene: SKPhysicsContactDelegate {
             }
             print("Конец игры")
             
+            let bombSound = SKAudioNode()
+            bombSound.autoplayLooped = false
+            self.addChild(bombSound)
+            let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_BOMB, waitForCompletion: true)
+            let remove = SKAction.removeFromParent()
+            bombSound.run(SKAction.sequence([playSound, remove]))
+            
             run(SKAction.sequence([SKAction.wait(forDuration: 2.5), SKAction.run {
-                //self.scene?.isPaused = true
                 self.gameOver()}]))
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Heart{
@@ -381,13 +402,32 @@ extension PlayScene: SKPhysicsContactDelegate {
             if (lifes < 3) {
                 addChild(lifesIndex[lifes])
                 contact.bodyB.node?.removeFromParent()
-                lifes += 1}
+                lifes += 1
+                
+                let heartSound = SKAudioNode()
+                heartSound.autoplayLooped = false
+                self.addChild(heartSound)
+                let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_HEART, waitForCompletion: true)
+                let remove = SKAction.removeFromParent()
+                heartSound.run(SKAction.sequence([playSound, remove]))
+                
+            }
                 print("lifes: ",lifes)
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Clock{
             if contact.bodyA.categoryBitMask == ColliderType.Clock{
                 contact.bodyA.node?.removeFromParent()
             } else{ contact.bodyB.node?.removeFromParent()}
+            self.physicsWorld.speed = 0.5
+            
+            let clockSound = SKAudioNode()
+            clockSound.autoplayLooped = false
+            self.addChild(clockSound)
+            let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_CLOCK, waitForCompletion: true)
+            let remove = SKAction.removeFromParent()
+            clockSound.run(SKAction.sequence([playSound, remove]))
+            
+            run(SKAction.sequence([SKAction.wait(forDuration: 10), SKAction.run {self.physicsWorld.speed = 1}]))
             print("Время")
         }
     }
