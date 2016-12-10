@@ -10,5 +10,6 @@ import Foundation
 
 public let SOUND_EFFECT_HEART = "HEART"
 public let SOUND_EFFECT_CLOCK = "CLOCK"
+public let SOUND_EFFECT_CLOCK_END = "KCOLC"
 public let SOUND_EFFECT_BOMB = "BOMB"
 public let SOUND_EFFECT_EAT = "EAT"

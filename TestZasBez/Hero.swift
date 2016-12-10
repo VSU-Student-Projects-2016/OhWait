@@ -15,7 +15,8 @@ enum Side {
 }
 
 class Hero {
-    public var hero = SKShapeNode()
+   // public var hero = SKShapeNode()
+    public var hero = SKSpriteNode()
     var basket = SKShapeNode()
     var arm = SKShapeNode()
     
@@ -23,10 +24,11 @@ class Hero {
     
     var armJoin: SKPhysicsJointPin!
     var basketJoin: SKPhysicsJointFixed!
-    //var armJoinRight: SKPhysicsJointPin!
-    //var basketJoinRight: SKPhysicsJointFixed!
     
     var orientation: Side = .none
+    
+    var texture: SKTexture!
+    var walkFrames = [SKTexture]()
     
     func createBasket() -> SKShapeNode {
         let w = 2048.00 * 0.05
@@ -161,13 +163,18 @@ class Hero {
     }
     
     func createHero() {
+        texture = SKTexture(imageNamed: "heroStop")
         let size = CGSize(width: 150, height: 250)
-        hero = SKShapeNode(rectOf: size)
-        hero.fillColor = SKColor.gray
-        hero.strokeColor = hero.fillColor
-        //self.addChild(hero)
+        hero = .init(texture: texture, color: .clear, size: size)
+        //hero = SKShapeNode(rectOf: size)
+        //hero.fillColor = .clear
+        //hero.strokeColor = hero.fillColor
         
         let move = SKPhysicsBody(rectangleOf: size)
+        
+        walkFrames.append(SKTexture(imageNamed: "heroGo1"))
+        walkFrames.append(SKTexture(imageNamed: "heroGo2"))
+        //let move = SKPhysicsBody(circleOfRadius: texture.size().height/2)
         
         move.affectedByGravity=true
         move.allowsRotation = false
@@ -178,6 +185,22 @@ class Hero {
         move.collisionBitMask = ColliderType.Ground | ColliderType.Shelf
         move.contactTestBitMask = ColliderType.None
         
+    }
+    
+    func changeImage(image: String) {
+        hero.texture = SKTexture(imageNamed: image)
+    }
+    
+    public func run() {
+        hero.run(SKAction.repeatForever(SKAction.animate(with: walkFrames,
+                                                         timePerFrame: 0.2,
+                                                         resize: false,
+                                                         restore: true)), withKey: "run")
+    }
+    
+    public func stopRunning() {
+        hero.removeAction(forKey: "run")
+        changeImage(image: "heroStop")
     }
     
     public func add(to scene: SKScene) {

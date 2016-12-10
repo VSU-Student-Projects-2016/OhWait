@@ -24,7 +24,11 @@ public struct ColliderType {
     public static var Arms: UInt32 = 0b100000000
 }
 
-
+enum MoveSide {
+    case moveLeft
+    case moveRight
+    case stop
+}
 
 let GAME_LOOP_ACTION_TAG = "GAME_LOOP_ACTION_TAG"
 
@@ -42,7 +46,10 @@ class PlayScene: SKScene {
     private var isTouch:Bool = false
     private var touchCap: UIView?
     private var gameover: UIView?
+    var moveSide: MoveSide = .stop
     var isGameOver = false
+    var speedAmp: CGFloat = 0
+    var defaults = UserDefaults.standard
     
     var count = 0
     var score = 0
@@ -146,7 +153,7 @@ class PlayScene: SKScene {
     
     func gameOver(){
         self.isPaused = !self.isPaused
-        gameover = GameOverScene(frame: (view?.frame)!, score: Int32(self.score))
+        gameover = GameOverScene(frame: (view?.frame)!, score: Int32(self.score), highscore: Int32(defaults.integer(forKey: "highScore")))
         gameover?.backgroundColor = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.4)
         gameover?.isUserInteractionEnabled = true
         pauseBtn.removeFromSuperview()
@@ -187,12 +194,15 @@ class PlayScene: SKScene {
             scene.size = (skView?.bounds.size)!
             scene.scaleMode = .aspectFill
             skView?.presentScene(scene)
+            scorelabel?.removeFromSuperview()
             touchCap?.removeFromSuperview()
             gameover?.removeFromSuperview()
         }
     }
     
     override func didMove(to view: SKView) {
+        speedAmp = UIScreen.main.bounds.size.width / 568
+        
         pauseBtn = UIButton(frame: CGRect(x: view.frame.maxX-80, y: view.frame.minY - 10, width: 100.0, height: 40.0))
         pauseBtn.setTitle("pause", for: .normal)
         pauseBtn.setTitleColor(.yellow ,for: .normal)
@@ -262,8 +272,20 @@ class PlayScene: SKScene {
         rotateAnalogStick.position = CGPoint(x: self.size.width/2 - 2 * rotateAnalogStick.radius, y: -self.size.height/6 + 5/3 * rotateAnalogStick.radius)
         addChild(rotateAnalogStick)
         
+        //запуск анимации
         moveAnalogStick.trackingHandler = { [unowned self] (data: AnalogJoystickData) in
             self.hero.hero.physicsBody?.velocity = CGVector(dx: 10 * data.velocity.x, dy: 0.0)
+            if ((self.moveSide == .stop) || ((self.moveSide == .moveLeft) && (data.velocity.x > 0)) || ((self.moveSide == .moveRight) && (data.velocity.x < 0))){
+                self.hero.run()
+                if (data.velocity.x > 0){
+                    self.moveSide = .moveRight
+                } else {self.moveSide = .moveLeft}
+            }
+        }
+        //остановка анимации
+        moveAnalogStick.stopHandler = {
+            self.hero.hero.physicsBody?.velocity = CGVector.zero
+            self.hero.stopRunning()
         }
         
         rotateAnalogStick.trackingHandler = { [unowned self] data in
@@ -273,11 +295,11 @@ class PlayScene: SKScene {
             
             if data.velocity.x < 0 {
                 self.hero.turn(to: .left)
-                self.hero.arm.physicsBody?.velocity = .init(dx: -100, dy: 15 * data.velocity.y)
+                self.hero.arm.physicsBody?.angularVelocity = self.speedAmp * -data.velocity.y
 
             } else {
                 self.hero.turn(to: .right)
-                self.hero.arm.physicsBody?.velocity = .init(dx: 100, dy: 15 * data.velocity.y)
+                self.hero.arm.physicsBody?.angularVelocity = self.speedAmp * data.velocity.y
             }
         }
         
@@ -324,7 +346,7 @@ class PlayScene: SKScene {
 extension PlayScene: SKPhysicsContactDelegate {
     func didBegin(_ contact:SKPhysicsContact) {
         
-        if isGameOver{ return }
+        if isGameOver { return }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Circle{
             let pos = contact.contactPoint
             if contact.bodyA.categoryBitMask == ColliderType.Circle{
@@ -366,7 +388,12 @@ extension PlayScene: SKPhysicsContactDelegate {
                     particles?.position = CGPoint(x: CGFloat.random(-self.size.width/2, self.size.width/2), y: CGFloat.random(-190.0, 190.0))
                     self.addChild(particles!)
                 }
+                isGameOver = true
                 print("Конец игры")
+                if score > defaults.integer(forKey: "highScore") {
+                    defaults.set(score, forKey: "highScore")
+                    defaults.synchronize()
+                }
                 run(SKAction.sequence([SKAction.wait(forDuration: 2.5), SKAction.run {
                     self.gameOver()}]))
             }else {
@@ -379,6 +406,7 @@ extension PlayScene: SKPhysicsContactDelegate {
                 particles?.position = CGPoint(x: CGFloat.random(-self.size.width/2, self.size.width/2), y: CGFloat.random(-190.0, 190.0))
                 self.addChild(particles!)
             }
+            isGameOver = true
             print("Конец игры")
             
             let bombSound = SKAudioNode()
@@ -387,7 +415,10 @@ extension PlayScene: SKPhysicsContactDelegate {
             let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_BOMB, waitForCompletion: true)
             let remove = SKAction.removeFromParent()
             bombSound.run(SKAction.sequence([playSound, remove]))
-            
+            if score > defaults.integer(forKey: "highScore") {
+                defaults.set(score, forKey: "highScore")
+                defaults.synchronize()
+            }
             run(SKAction.sequence([SKAction.wait(forDuration: 2.5), SKAction.run {
                 self.gameOver()}]))
         }
@@ -422,11 +453,17 @@ extension PlayScene: SKPhysicsContactDelegate {
             
             let clockSound = SKAudioNode()
             clockSound.autoplayLooped = false
+            let clockEndSound = SKAudioNode()
+            clockEndSound.autoplayLooped = false;
             self.addChild(clockSound)
+            self.addChild(clockEndSound)
             let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_CLOCK, waitForCompletion: true)
             let remove = SKAction.removeFromParent()
             clockSound.run(SKAction.sequence([playSound, remove]))
+            let playEndSound = SKAction.playSoundFileNamed(SOUND_EFFECT_CLOCK_END, waitForCompletion: true)
+            let endRemove = SKAction.removeFromParent()
             
+            run(SKAction.sequence([SKAction.wait(forDuration: 8), SKAction.run {clockEndSound.run(SKAction.sequence([playEndSound, endRemove]))}]))
             run(SKAction.sequence([SKAction.wait(forDuration: 10), SKAction.run {self.physicsWorld.speed = 1}]))
             print("Время")
         }

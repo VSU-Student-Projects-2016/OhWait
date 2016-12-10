@@ -41,7 +41,7 @@ enum Consumable {
     }
 }
 class Ball:SKNode{
-    var ball = SKShapeNode()
+    var ball: SKNode!
     
     var didHitTheGround = false
     func createBall() {
@@ -49,24 +49,34 @@ class Ball:SKNode{
         let type: Consumable
         if arc4random() % 100 > 95 {
             type = .bomb
-        } else if arc4random() % 29 == 0 {
+        } else if arc4random() % 2 == 0 {//29
             type = .heart
-        } else if arc4random() % 5 == 0 {
+        } else if arc4random() % 5 == 0 {//23
             type = .clock
         } else {
             type = .coin
         }
         
-        
-        let w = 2048 * 0.009
-        ball = SKShapeNode.init(circleOfRadius: CGFloat(w))
+        var move:SKPhysicsBody
+        var texture = SKTexture(imageNamed: "heart")
+        if (type == .heart){
+            let ball = SKSpriteNode.init(texture: texture, color: .clear, size: texture.size())
+            move = SKPhysicsBody.init(circleOfRadius: texture.size().height/2)
+            move.allowsRotation = true
+            self.ball = ball
+        }
+        else{
+        let w = 18.5
+        let ball = SKShapeNode.init(circleOfRadius: CGFloat(w))
         ball.position = CGPoint.zero
         ball.fillColor = type.color
         ball.strokeColor = ball.fillColor
-        self.addChild(ball)
+        self.ball = ball
         
-        let move=SKPhysicsBody.init(circleOfRadius: CGFloat(w))
-        ball.physicsBody=move
+        move=SKPhysicsBody.init(circleOfRadius: CGFloat(w))
+        }
+        self.ball.physicsBody=move
+        self.addChild(self.ball)
         move.affectedByGravity=true
         move.isDynamic=true
         move.categoryBitMask = type.mask

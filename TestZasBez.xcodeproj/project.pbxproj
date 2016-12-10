@@ -16,6 +16,7 @@
 		AE2C7F051DE076D40077C5ED /* PlayScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2C7F041DE076D40077C5ED /* PlayScene.swift */; };
 		AE2C7F071DE07A850077C5ED /* PlayScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE2C7F061DE07A850077C5ED /* PlayScene.sks */; };
 		AE2C7F091DE08DCE0077C5ED /* TouchCap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2C7F081DE08DCE0077C5ED /* TouchCap.swift */; };
+		AE41BDA71DFC262C002D70F4 /* KCOLC.wav in Resources */ = {isa = PBXBuildFile; fileRef = AE41BDA61DFC262C002D70F4 /* KCOLC.wav */; };
 		AE4F1AE41DCDDE1E0013B389 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */; };
 		AEBC4C771DF2FD4A00342612 /* HEART.wav in Resources */ = {isa = PBXBuildFile; fileRef = AEBC4C761DF2FD4A00342612 /* HEART.wav */; };
 		AEBC4C791DF2FE6700342612 /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBC4C781DF2FE6700342612 /* Sounds.swift */; };
@@ -47,6 +48,7 @@
 		AE2C7F041DE076D40077C5ED /* PlayScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayScene.swift; sourceTree = "<group>"; };
 		AE2C7F061DE07A850077C5ED /* PlayScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = PlayScene.sks; sourceTree = "<group>"; };
 		AE2C7F081DE08DCE0077C5ED /* TouchCap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchCap.swift; sourceTree = "<group>"; };
+		AE41BDA61DFC262C002D70F4 /* KCOLC.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = KCOLC.wav; path = Sounds/KCOLC.wav; sourceTree = "<group>"; };
 		AE4F1AE31DCDDE1E0013B389 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnalogJoystick.swift; path = "../../../Desktop/Swift-SpriteKit-Analog-Stick-master/AnalogStick Demo/AnalogStick Demo/AnalogJoystick.swift"; sourceTree = "<group>"; };
 		AEBC4C761DF2FD4A00342612 /* HEART.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = HEART.wav; path = Sounds/HEART.wav; sourceTree = "<group>"; };
 		AEBC4C781DF2FE6700342612 /* Sounds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sounds.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				AEBC4C761DF2FD4A00342612 /* HEART.wav */,
 				AEBC4C7A1DF3039E00342612 /* EAT.wav */,
 				AEBC4C7C1DF303A300342612 /* CLOCK.wav */,
+				AE41BDA61DFC262C002D70F4 /* KCOLC.wav */,
 				AEBC4C7E1DF303A800342612 /* BOMB.wav */,
 			);
 			path = TestZasBez;
@@ -192,6 +195,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE41BDA71DFC262C002D70F4 /* KCOLC.wav in Resources */,
 				AEBC4C7F1DF303A800342612 /* BOMB.wav in Resources */,
 				AE2C7F071DE07A850077C5ED /* PlayScene.sks in Resources */,
 				AED8048C1D96AB98003ADCBC /* Main.storyboard in Resources */,
