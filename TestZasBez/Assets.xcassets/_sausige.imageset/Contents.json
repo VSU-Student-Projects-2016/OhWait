@@ -6,19 +6,22 @@
     },
     {
       "idiom" : "iphone",
-      "filename" : "heart@2x.png",
+      "filename" : "AssetsSausige80.png",
       "scale" : "2x"
     },
     {
       "idiom" : "iphone",
+      "filename" : "AssetsSausige160.png",
       "scale" : "3x"
     },
     {
       "idiom" : "ipad",
+      "filename" : "AssetsSausige80-1.png",
       "scale" : "1x"
     },
     {
       "idiom" : "ipad",
+      "filename" : "AssetsSausige120.png",
       "scale" : "2x"
     }
   ],

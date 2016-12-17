@@ -16,12 +16,13 @@ public struct ColliderType {
     public static var Basket: UInt32 = 0b1
     public static var Shelf: UInt32 = 0b10
     public static var Ground: UInt32 = 0b100
-    public static var Circle: UInt32 = 0b1000
+    public static var Food: UInt32 = 0b1000
     public static var Heart: UInt32 = 0b10000
     public static var Bomb: UInt32 = 0b100000
     public static var Clock: UInt32 = 0b1000000
     public static var Hero: UInt32 = 0b10000000
     public static var Arms: UInt32 = 0b100000000
+    public static var Catch: UInt32 = 0b1000000000
 }
 
 enum MoveSide {
@@ -50,6 +51,7 @@ class PlayScene: SKScene {
     var isGameOver = false
     var speedAmp: CGFloat = 0
     var defaults = UserDefaults.standard
+    var heroSide:Side = .left
     
     var count = 0
     var score = 0
@@ -250,14 +252,13 @@ class PlayScene: SKScene {
             spinnyNode.lineWidth = 2.5
         }
         
-        //let movefloor = SKPhysicsBody(edgeLoopFrom: CGRect(x: -50,y: 32,width: self.frame.size.width+100,height: self.frame.size.height-900))
         let movefloor = SKPhysicsBody(rectangleOf: .init(width: w, height: 32), center: CGPoint.init(x: w/2, y: 0))
         floor.physicsBody = movefloor
         movefloor.affectedByGravity = false
         movefloor.isDynamic = false
         movefloor.categoryBitMask = ColliderType.Ground
-        movefloor.contactTestBitMask = ColliderType.Circle
-        movefloor.collisionBitMask =  ColliderType.Circle | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | ColliderType.Hero
+        movefloor.contactTestBitMask = ColliderType.Food
+        movefloor.collisionBitMask =  ColliderType.Food | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | ColliderType.Hero
         
         createAllShelfs()
         hero = Hero()
@@ -276,7 +277,7 @@ class PlayScene: SKScene {
         moveAnalogStick.trackingHandler = { [unowned self] (data: AnalogJoystickData) in
             self.hero.hero.physicsBody?.velocity = CGVector(dx: 10 * data.velocity.x, dy: 0.0)
             if ((self.moveSide == .stop) || ((self.moveSide == .moveLeft) && (data.velocity.x > 0)) || ((self.moveSide == .moveRight) && (data.velocity.x < 0))){
-                self.hero.run()
+                self.hero.run(to: self.heroSide)
                 if (data.velocity.x > 0){
                     self.moveSide = .moveRight
                 } else {self.moveSide = .moveLeft}
@@ -285,7 +286,7 @@ class PlayScene: SKScene {
         //остановка анимации
         moveAnalogStick.stopHandler = {
             self.hero.hero.physicsBody?.velocity = CGVector.zero
-            self.hero.stopRunning()
+            self.hero.stopRunning(to: self.heroSide)
         }
         
         rotateAnalogStick.trackingHandler = { [unowned self] data in
@@ -294,10 +295,20 @@ class PlayScene: SKScene {
             }
             
             if data.velocity.x < 0 {
+                if (self.heroSide != .left)
+                {
+                    self.heroSide = .left
+                    self.hero.changeImage(to: .left)
+                }
                 self.hero.turn(to: .left)
                 self.hero.arm.physicsBody?.angularVelocity = self.speedAmp * -data.velocity.y
 
             } else {
+                if (self.heroSide != .right)
+                {
+                    self.heroSide = .right
+                    self.hero.changeImage(to: .right)
+                }
                 self.hero.turn(to: .right)
                 self.hero.arm.physicsBody?.angularVelocity = self.speedAmp * data.velocity.y
             }
@@ -319,20 +330,15 @@ class PlayScene: SKScene {
         }
         
         beginGameLoop()
-        //run(SKAction.repeatForever(SKAction.sequence([SKAction.wait(forDuration: 10.0), SKAction.run { self.difficulty+=1 }])))
     }
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-       /* for t in touches {
-            isCenter = (toPoint: t.location(in: self)).toPoint
-            isTouch = true;
-        }*/
+   
 
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //for t in touches { self.basket?.position = (toPoint: t.location(in: self))}
         for t in touches {
             isCenter = (toPoint: t.location(in: self)).toPoint
         }
@@ -347,9 +353,9 @@ extension PlayScene: SKPhysicsContactDelegate {
     func didBegin(_ contact:SKPhysicsContact) {
         
         if isGameOver { return }
-        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Circle{
+        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Food{
             let pos = contact.contactPoint
-            if contact.bodyA.categoryBitMask == ColliderType.Circle{
+            if contact.bodyA.categoryBitMask == ColliderType.Food{
                 contact.bodyA.node?.removeFromParent()
             } else{ contact.bodyB.node?.removeFromParent()}
             
@@ -362,14 +368,16 @@ extension PlayScene: SKPhysicsContactDelegate {
             self.addChild(coinSound)
             let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_EAT, waitForCompletion: true)
             let remove = SKAction.removeFromParent()
-            coinSound.run(SKAction.sequence([playSound, remove]))
+            if (defaults.bool(forKey: "btnSound")){
+                coinSound.run(SKAction.sequence([playSound, remove]))
+            }
             
             score += 1
             scorelabel?.text = String(score)
             print("Score: ", score)
             increaseDifficulty()
         }
-        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Ground | ColliderType.Circle{
+        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Ground | ColliderType.Food{
             let ball: Ball
             if let ba = contact.bodyA.node?.parent as? Ball {
                 ball = ba
@@ -401,6 +409,9 @@ extension PlayScene: SKPhysicsContactDelegate {
             }
         }
         if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Bomb{
+            if contact.bodyA.categoryBitMask == ColliderType.Bomb{
+                contact.bodyA.node?.removeFromParent()
+            } else{ contact.bodyB.node?.removeFromParent()}
             for _ in 0..<15{
                 let particles = SKEmitterNode(fileNamed: "BombEffects")
                 particles?.position = CGPoint(x: CGFloat.random(-self.size.width/2, self.size.width/2), y: CGFloat.random(-190.0, 190.0))
@@ -414,7 +425,9 @@ extension PlayScene: SKPhysicsContactDelegate {
             self.addChild(bombSound)
             let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_BOMB, waitForCompletion: true)
             let remove = SKAction.removeFromParent()
-            bombSound.run(SKAction.sequence([playSound, remove]))
+            if (defaults.bool(forKey: "btnSound")){
+                bombSound.run(SKAction.sequence([playSound, remove]))
+            }
             if score > defaults.integer(forKey: "highScore") {
                 defaults.set(score, forKey: "highScore")
                 defaults.synchronize()
@@ -440,7 +453,9 @@ extension PlayScene: SKPhysicsContactDelegate {
                 self.addChild(heartSound)
                 let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_HEART, waitForCompletion: true)
                 let remove = SKAction.removeFromParent()
-                heartSound.run(SKAction.sequence([playSound, remove]))
+                if (defaults.bool(forKey: "btnSound")){
+                    heartSound.run(SKAction.sequence([playSound, remove]))
+                }
                 
             }
                 print("lifes: ",lifes)
@@ -459,11 +474,14 @@ extension PlayScene: SKPhysicsContactDelegate {
             self.addChild(clockEndSound)
             let playSound = SKAction.playSoundFileNamed(SOUND_EFFECT_CLOCK, waitForCompletion: true)
             let remove = SKAction.removeFromParent()
-            clockSound.run(SKAction.sequence([playSound, remove]))
+            if (defaults.bool(forKey: "btnSound")){
+                clockSound.run(SKAction.sequence([playSound, remove]))
+            }
             let playEndSound = SKAction.playSoundFileNamed(SOUND_EFFECT_CLOCK_END, waitForCompletion: true)
             let endRemove = SKAction.removeFromParent()
-            
-            run(SKAction.sequence([SKAction.wait(forDuration: 8), SKAction.run {clockEndSound.run(SKAction.sequence([playEndSound, endRemove]))}]))
+            if (defaults.bool(forKey: "btnSound")){
+                run(SKAction.sequence([SKAction.wait(forDuration: 8), SKAction.run {clockEndSound.run(SKAction.sequence([playEndSound, endRemove]))}]))
+            }
             run(SKAction.sequence([SKAction.wait(forDuration: 10), SKAction.run {self.physicsWorld.speed = 1}]))
             print("Время")
         }

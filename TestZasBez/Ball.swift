@@ -10,27 +10,39 @@ import Foundation
 import SpriteKit
 
 enum Consumable {
-    case coin
+    case food
     case heart
     case bomb
     case clock
     
-    var color: SKColor {
+    var texture: SKTexture {
         switch self {
-        case .coin:
-            return SKColor.yellow
+        case .food:
+            return getRandomFood()
         case .heart:
-            return SKColor.red
+            return SKTexture(imageNamed: "_heart")
         case .bomb:
-            return SKColor.black
+            return SKTexture(imageNamed: "_bomb")
         case .clock:
-            return SKColor.green
+            return SKTexture(imageNamed: "_clock")
         }
     }
+    
+    func getRandomFood() -> SKTexture{
+        let apple:SKTexture = SKTexture(imageNamed: "_apple")
+        let cheese:SKTexture = SKTexture(imageNamed: "_cheese")
+        let coco:SKTexture = SKTexture(imageNamed: "_coco")
+        let egg:SKTexture = SKTexture(imageNamed: "_egg")
+        let sausige:SKTexture = SKTexture(imageNamed: "_sausige")
+        let tomato:SKTexture = SKTexture(imageNamed: "_tomato")
+        let randomPoint = [apple,cheese,coco,egg,sausige,tomato]
+        return randomPoint[Int(arc4random() % UInt32(randomPoint.count))]
+    }
+    
     var mask: UInt32{
         switch self {
-        case .coin:
-            return ColliderType.Circle
+        case .food:
+            return ColliderType.Food
         case .heart:
             return ColliderType.Heart
         case .bomb:
@@ -49,39 +61,26 @@ class Ball:SKNode{
         let type: Consumable
         if arc4random() % 100 > 95 {
             type = .bomb
-        } else if arc4random() % 2 == 0 {//29
+        } else if arc4random() % 29 == 0 {//29
             type = .heart
-        } else if arc4random() % 5 == 0 {//23
+        } else if arc4random() % 23 == 0 {//23
             type = .clock
         } else {
-            type = .coin
+            type = .food
         }
         
         var move:SKPhysicsBody
-        var texture = SKTexture(imageNamed: "heart")
-        if (type == .heart){
-            let ball = SKSpriteNode.init(texture: texture, color: .clear, size: texture.size())
-            move = SKPhysicsBody.init(circleOfRadius: texture.size().height/2)
-            move.allowsRotation = true
-            self.ball = ball
-        }
-        else{
-        let w = 18.5
-        let ball = SKShapeNode.init(circleOfRadius: CGFloat(w))
-        ball.position = CGPoint.zero
-        ball.fillColor = type.color
-        ball.strokeColor = ball.fillColor
-        self.ball = ball
-        
-        move=SKPhysicsBody.init(circleOfRadius: CGFloat(w))
-        }
+        let texture:SKTexture = type.texture
+        ball = SKSpriteNode.init(texture: texture, color: .clear, size: texture.size())
+        move = SKPhysicsBody.init(circleOfRadius: texture.size().height/2)
+        move.allowsRotation = true
         self.ball.physicsBody=move
         self.addChild(self.ball)
         move.affectedByGravity=true
         move.isDynamic=true
         move.categoryBitMask = type.mask
         move.contactTestBitMask = ColliderType.Ground | ColliderType.Basket
-        move.collisionBitMask = ColliderType.Shelf | ColliderType.Ground | ColliderType.Circle
+        move.collisionBitMask = ColliderType.Shelf | ColliderType.Ground | ColliderType.Food
     }
     
     override init(){

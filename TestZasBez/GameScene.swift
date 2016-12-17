@@ -53,7 +53,7 @@ class GameScene: SKScene {
                // print("Touch began on PlayButton")
             }
             if self.atPoint(location) == self.soundButton {
-                if let view = self.view {
+                if self.view != nil {
                     let previousValue = defaults.bool(forKey: "btnSound")
                     defaults.set(!previousValue, forKey: "btnSound")
                     defaults.synchronize()

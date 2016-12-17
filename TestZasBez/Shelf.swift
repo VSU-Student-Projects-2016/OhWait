@@ -30,7 +30,7 @@ class ShelfLeft:SKNode{
         move.affectedByGravity=false
         move.isDynamic=false
         move.categoryBitMask = ColliderType.Shelf
-        move.collisionBitMask = ColliderType.Circle | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | ColliderType.Hero
+        move.collisionBitMask = ColliderType.Food | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | ColliderType.Hero
         move.contactTestBitMask = ColliderType.None
         return move
     }
@@ -80,7 +80,7 @@ class ShelfRight:SKNode{
         move.affectedByGravity=false
         move.isDynamic=false
         move.categoryBitMask = ColliderType.Shelf
-        move.collisionBitMask = ColliderType.Circle | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | ColliderType.Hero
+        move.collisionBitMask = ColliderType.Food | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart | ColliderType.Hero
         move.contactTestBitMask = ColliderType.None
         return move
     }
