@@ -10,7 +10,7 @@ import SpriteKit
 
 class GameOverScene: UIView{
     func addresult(score:Int32, highscore: Int32){
-        let label = UILabel(frame: CGRect(x: self.frame.midX - 80, y: self.frame.minY - 20, width: 200.0, height: 100.0))
+        let label = UILabel(frame: CGRect(x: self.frame.midX, y: self.frame.minY - 20, width: 200.0, height: 100.0))
         let labelMaxScore = UILabel(frame: CGRect(x: self.frame.midX, y: self.frame.minY + 20, width: 100.0, height: 100.0))
         let labelScore = UILabel(frame: CGRect(x: self.frame.midX, y: self.frame.minY, width: 100.0, height: 100.0))
         if score > highscore {
@@ -20,11 +20,10 @@ class GameOverScene: UIView{
             label.textColor = SKColor.red
             label.text = String("Try once more..")
         }
+        
         self.addSubview(label)
-        labelScore.textColor = SKColor.yellow
         labelScore.text = String(score)
         addSubview(labelScore)
-        labelMaxScore.textColor = SKColor.red
         labelMaxScore.text = String(highscore)
         addSubview(labelMaxScore)
     }

@@ -79,8 +79,8 @@ class Ball:SKNode{
         move.affectedByGravity=true
         move.isDynamic=true
         move.categoryBitMask = type.mask
-        move.contactTestBitMask = ColliderType.Ground | ColliderType.Basket
-        move.collisionBitMask = ColliderType.Shelf | ColliderType.Ground | ColliderType.Food
+        move.contactTestBitMask = ColliderType.Ground | ColliderType.Catch
+        move.collisionBitMask = ColliderType.Shelf | ColliderType.Ground | ColliderType.Food | ColliderType.Basket
     }
     
     override init(){

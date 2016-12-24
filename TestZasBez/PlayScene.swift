@@ -52,6 +52,7 @@ class PlayScene: SKScene {
     var speedAmp: CGFloat = 0
     var defaults = UserDefaults.standard
     var heroSide:Side = .left
+    var armSide:Side = .none
     
     var count = 0
     var score = 0
@@ -92,6 +93,27 @@ class PlayScene: SKScene {
         }
         let action = SKAction.repeatForever(SKAction.sequence([wait, spawn]))
         run(action, withKey: GAME_LOOP_ACTION_TAG)
+    }
+    
+    
+    func CreateBackgraund(){
+        let bgImage = SKSpriteNode(imageNamed: "_background")
+        bgImage.position = CGPoint.init(x: self.frame.midX + 10, y: self.frame.midY)
+        bgImage.zPosition = -100
+        let microwaveImg = SKSpriteNode(imageNamed: "_microwave")
+        microwaveImg.position = CGPoint.init(x: self.frame.midX + microwaveImg.size.width*2.73, y: self.frame.midY + microwaveImg.size.height*1.2)
+        microwaveImg.zPosition = bgImage.zPosition + 10
+        let fridgeImg = SKSpriteNode(imageNamed: "_fridge")
+        fridgeImg.zPosition = bgImage.zPosition + 10
+        fridgeImg.position = CGPoint.init(x: self.frame.midX - fridgeImg.size.width*1.35, y: self.frame.midY - fridgeImg.frame.height * 0.075)
+        let tableImg = SKSpriteNode(imageNamed: "_table")
+        tableImg.zPosition = bgImage.zPosition + 10
+        tableImg.position = CGPoint.init(x: self.frame.midX + tableImg.size.width*1.5, y: self.frame.midY - tableImg.size.height*1)
+        
+        self.addChild(bgImage)
+        self.addChild(microwaveImg)
+        self.addChild(fridgeImg)
+        self.addChild(tableImg)
     }
     
     func createAllShelfs(){
@@ -203,6 +225,8 @@ class PlayScene: SKScene {
     }
     
     override func didMove(to view: SKView) {
+        CreateBackgraund()
+        
         speedAmp = UIScreen.main.bounds.size.width / 568
         
         pauseBtn = UIButton(frame: CGRect(x: view.frame.maxX-80, y: view.frame.minY - 10, width: 100.0, height: 40.0))
@@ -246,7 +270,8 @@ class PlayScene: SKScene {
         let w = self.size.width
         let floor = SKShapeNode.init(rect: CGRect(origin: CGPoint.zero, size: CGSize.init(width: w, height: 32)))
         floor.position = CGPoint(x: -self.size.width/2, y: -214)
-        floor.fillColor = SKColor.white
+        floor.fillColor = .clear
+        floor.strokeColor = .clear
         self.addChild(floor)
         if let spinnyNode = self.spinnyNode {
             spinnyNode.lineWidth = 2.5
@@ -286,7 +311,7 @@ class PlayScene: SKScene {
         //остановка анимации
         moveAnalogStick.stopHandler = {
             self.hero.hero.physicsBody?.velocity = CGVector.zero
-            self.hero.stopRunning(to: self.heroSide)
+            self.hero.stopRunning(to: self.heroSide, to: self.armSide)
         }
         
         rotateAnalogStick.trackingHandler = { [unowned self] data in
@@ -301,6 +326,7 @@ class PlayScene: SKScene {
                     self.hero.changeImage(to: .left)
                 }
                 self.hero.turn(to: .left)
+                self.armSide = .left
                 self.hero.arm.physicsBody?.angularVelocity = self.speedAmp * -data.velocity.y
 
             } else {
@@ -310,8 +336,16 @@ class PlayScene: SKScene {
                     self.hero.changeImage(to: .right)
                 }
                 self.hero.turn(to: .right)
+                self.armSide = .right
                 self.hero.arm.physicsBody?.angularVelocity = self.speedAmp * data.velocity.y
             }
+        }
+        
+        rotateAnalogStick.stopHandler = {
+            self.hero.turn(to: .none)
+            self.armSide = .none
+            self.hero.stopRunning(to: .none, to: self.armSide)
+            self.hero.changeImage(to: .none)
         }
         
         view.isMultipleTouchEnabled = true
@@ -353,7 +387,7 @@ extension PlayScene: SKPhysicsContactDelegate {
     func didBegin(_ contact:SKPhysicsContact) {
         
         if isGameOver { return }
-        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Food{
+        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Catch | ColliderType.Food{
             let pos = contact.contactPoint
             if contact.bodyA.categoryBitMask == ColliderType.Food{
                 contact.bodyA.node?.removeFromParent()
@@ -408,7 +442,7 @@ extension PlayScene: SKPhysicsContactDelegate {
                 lifesIndex[lifes].removeFromParent()
             }
         }
-        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Bomb{
+        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Catch | ColliderType.Bomb{
             if contact.bodyA.categoryBitMask == ColliderType.Bomb{
                 contact.bodyA.node?.removeFromParent()
             } else{ contact.bodyB.node?.removeFromParent()}
@@ -435,7 +469,7 @@ extension PlayScene: SKPhysicsContactDelegate {
             run(SKAction.sequence([SKAction.wait(forDuration: 2.5), SKAction.run {
                 self.gameOver()}]))
         }
-        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Basket | ColliderType.Heart{
+        if contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask == ColliderType.Catch | ColliderType.Heart{
             let pos = contact.contactPoint
             if contact.bodyA.categoryBitMask == ColliderType.Heart{
                 contact.bodyA.node?.removeFromParent()

@@ -22,8 +22,10 @@ class GameScene: SKScene {
         if (defaults.bool(forKey: "btnSound")){
             soundButton = SKSpriteNode(imageNamed: "sound_on")
         } else {soundButton = SKSpriteNode(imageNamed: "sound_off")}
-        soundButton?.scale(to: CGSize.init(width: 30, height: 30))
-        soundButton?.position = CGPoint.init(x: self.frame.midX - 260, y: self.frame.midY + 140)
+        let width = self.size.width/568
+        let height = self.size.height/320
+        soundButton?.scale(to: CGSize.init(width: 30 * width, height: 30 * height))
+        soundButton?.position = CGPoint.init(x: self.frame.midX - 260 * width, y: self.frame.midY + 140 * height)
         self.addChild(soundButton!)
         self.backgroundColor = UIColor.blue
     }

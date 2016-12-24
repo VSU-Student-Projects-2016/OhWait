@@ -6,22 +6,22 @@
     },
     {
       "idiom" : "iphone",
-      "filename" : "heroGo1Right2x.png",
+      "filename" : "table2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "iphone",
-      "filename" : "heroGo1Right3x.png",
+      "filename" : "table3x.png",
       "scale" : "3x"
     },
     {
       "idiom" : "ipad",
-      "filename" : "heroGo1Right2x-1.png",
+      "filename" : "table2x-1.png",
       "scale" : "1x"
     },
     {
       "idiom" : "ipad",
-      "filename" : "heroGo1Right4x.png",
+      "filename" : "table4x.png",
       "scale" : "2x"
     }
   ],

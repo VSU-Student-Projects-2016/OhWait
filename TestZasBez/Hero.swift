@@ -20,19 +20,16 @@ enum Side {
         case .right:
             return SKTexture(imageNamed: "_arm_right")
         case .none:
-             return SKTexture(imageNamed: "_arm_right")
+            return SKTexture(imageNamed: "armStop")
         }
     }
 }
 
 class Hero {
-   // public var hero = SKShapeNode()
     public var hero = SKSpriteNode()
-    //var basket = SKShapeNode()
-   // var arm = SKShapeNode()
     var basket = SKSpriteNode()
     var arm = SKSpriteNode()
-    
+    var catchBody = SKShapeNode()
     var positionJoint: SKPhysicsJoint!
     
     var armJoin: SKPhysicsJointPin!
@@ -46,20 +43,12 @@ class Hero {
     var walkFramesRight = [SKTexture]()
     
     func createBasket() -> SKSpriteNode {
-        /*let w = 2048.00 * 0.05
-        let basket = SKShapeNode.init(rect: .init(x: -w/2, y: -w/10, width: w, height: w/5))
-        basket.fillColor = SKColor.white
-        basket.strokeColor = basket.fillColor
-        //basket = SKSpriteNode(imageNamed: "basket.png")
-        //self.addChild(basket)*/
-        
         var basket = SKSpriteNode()
         var move = SKPhysicsBody()
         let texture:SKTexture = SKTexture.init(imageNamed: "_basket")
         basket = SKSpriteNode.init(texture: texture, color: .clear, size: texture.size())
         move = SKPhysicsBody.init(texture: texture, size: texture.size())
         
-        //move = SKPhysicsBody.init(rectangleOf: .init(width: w, height: w/5))
         basket.physicsBody = move
         move.isDynamic=true
         move.categoryBitMask = ColliderType.Basket
@@ -93,26 +82,12 @@ class Hero {
     }
     
     func createArm(to side: Side/*, heroframemidx: CGFloat*/) -> SKSpriteNode {
-       /*var arm = SKShapeNode()
-        var move = SKPhysicsBody()
-        if side == Side.left{
-            arm = SKShapeNode.init(path: helpArmLeft())
-            move = SKPhysicsBody.init(polygonFrom: helpArmLeft())
-            
-        } else {
-            arm = SKShapeNode.init(path: helpArmRight())
-            move = SKPhysicsBody.init(polygonFrom: helpArmRight())
-        }*/
         var arm = SKSpriteNode()
         var move = SKPhysicsBody()
         let texture:SKTexture = side.texture
         arm = SKSpriteNode.init(texture: texture, color: .clear, size: texture.size())
         move = SKPhysicsBody.init(texture: texture, size: texture.size())
         
-        //arm.fillColor = SKColor.gray
-        //arm.strokeColor = arm.fillColor
-        
-       // arm.position = CGPoint(x: hero.frame.midX, y: hero.frame.midY + hero.frame.height * 0.25)
         move.mass = 0.7
         move.isDynamic = true
         arm.physicsBody = move
@@ -128,9 +103,7 @@ class Hero {
         if side != self.orientation {
             switch side {
             case .right:
-                if self.orientation != .none {
-                    removeArm()
-                }
+                removeArm()
                 self.orientation = Side.right
                 
                 let heroFrame = hero.frame
@@ -148,19 +121,30 @@ class Hero {
                 armJoin.lowerAngleLimit = -1
                 
                 let armFrame = arm.frame
-               basket = createBasket()
-                
+                basket = createBasket()
                 arm.addChild(basket)
                 basket.position = CGPoint(x: arm.frame.size.width/2, y:armFrame.size.height - basket.frame.size.height*0.75)
                 print(armFrame)
                 basketJoin = SKPhysicsJointFixed.joint(withBodyA: basket.physicsBody!, bodyB: arm.physicsBody!, anchor: CGPoint(x: arm.frame.maxX-10, y: armFrame.minY - 60))
+                
+                catchBody = SKShapeNode.init(rectOf: .init(width: basket.frame.size.width*0.6, height: 1))
+                catchBody.fillColor = SKColor.green
+                catchBody.position = CGPoint(x: basket.frame.midX - catchBody.frame.size.width, y: basket.frame.maxY - catchBody.frame.size.height);
+                let catchB = SKPhysicsBody.init(rectangleOf: .init(width: basket.frame.size.width*0.8, height: 0.1))
+                catchB.categoryBitMask = ColliderType.Catch
+                catchB.collisionBitMask = ColliderType.None
+                catchB.contactTestBitMask = ColliderType.Food | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart
+                catchBody.physicsBody = catchB;
+                basket.addChild(catchBody)
+                
+                catchJoin = SKPhysicsJointFixed.joint(withBodyA: catchBody.physicsBody!, bodyB: basket.physicsBody!, anchor: CGPoint(x: basket.frame.midX - catchBody.frame.size.width, y: basket.frame.maxY))
+                    
                 hero.scene!.physicsWorld.add(armJoin)
                 arm.scene!.physicsWorld.add(basketJoin)
+                basket.scene?.physicsWorld.add(catchJoin)
                 
             case .left:
-                if self.orientation != .none {
-                    removeArm()
-                }
+                removeArm()
                 self.orientation = Side.left
                 
                 let heroFrame = hero.frame
@@ -182,18 +166,39 @@ class Hero {
                 basket.position = CGPoint(x: -arm.frame.size.width/2, y: armFrame.minY + basket.frame.height * 2/3)
                 basketJoin = SKPhysicsJointFixed.joint(withBodyA: basket.physicsBody!, bodyB: arm.physicsBody!, anchor: CGPoint(x: -arm.frame.size.width * 3/2, y: armFrame.minY))
                 
-                /*let catchBody = SKPhysicsBody.init(rectangleOf: .init(width: basket.frame.size.width*0.8, height: 0.1))
-                catchBody.categoryBitMask = ColliderType.Catch
-                catchBody.collisionBitMask = ColliderType.None
-                catchBody.contactTestBitMask = ColliderType.Food | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart
+                catchBody = SKShapeNode.init(rectOf: .init(width: basket.frame.size.width*0.6, height: 1))
+                catchBody.fillColor = SKColor.clear
+                catchBody.position = CGPoint(x: basket.frame.midX + catchBody.frame.size.width, y: basket.frame.maxY);
+                let catchB = SKPhysicsBody.init(rectangleOf: .init(width: basket.frame.size.width*0.8, height: 0.1))
+                catchB.categoryBitMask = ColliderType.Catch
+                catchB.collisionBitMask = ColliderType.None
+                catchB.contactTestBitMask = ColliderType.Food | ColliderType.Bomb | ColliderType.Clock | ColliderType.Heart
+                catchBody.physicsBody = catchB;
+                basket.addChild(catchBody)
                 
-                catchJoin = SKPhysicsJointFixed.joint(withBodyA: catchBody, bodyB: basket.physicsBody!, anchor: CGPoint(x: basket.frame.size.width * 3/2, y: basket.frame.minY))*/
-                
+                catchJoin = SKPhysicsJointFixed.joint(withBodyA: catchBody.physicsBody!, bodyB: basket.physicsBody!, anchor: CGPoint(x: basket.frame.midX, y: basket.frame.maxY))
+                    
                 hero.scene!.physicsWorld.add(armJoin)
                 arm.scene?.physicsWorld.add(basketJoin)
-               // basket.scene?.physicsWorld.add(catchJoin)
+                basket.scene?.physicsWorld.add(catchJoin)
             case .none:
                 removeArm()
+                self.orientation = Side.none
+                
+                let heroFrame = hero.frame
+                
+                arm = createArm(to: .none)
+                arm.position = CGPoint(x: arm.size.width*0.1, y: -arm.size.height*0.5)
+                hero.addChild(arm)
+                armJoin = SKPhysicsJointPin.joint(withBodyA: arm.physicsBody!, bodyB: hero.physicsBody!, anchor: CGPoint.init(x: heroFrame.midX - heroFrame.size.width * 0.16, y: heroFrame.midY))
+                
+                armJoin.frictionTorque = 10.0
+                
+                armJoin.shouldEnableLimits = true
+                armJoin.upperAngleLimit = 0.85
+                armJoin.lowerAngleLimit = -1
+                
+                hero.scene!.physicsWorld.add(armJoin)
             }
         }
     }
@@ -246,9 +251,14 @@ class Hero {
         }
     }
     
-    public func stopRunning(to side: Side) {
+    public func stopRunning(to side: Side, to armside:Side) {
         hero.removeAction(forKey: "run")
-        changeImage(to: side)
+        changeImage(to: side);
+        hero.zPosition = 0
+        if (armside != .none){
+            arm.zPosition = hero.zPosition - 10
+        }else { arm.zPosition = hero.zPosition + 10 }
+        basket.zPosition = hero.zPosition + 10
     }
     
     public func add(to scene: SKScene) {

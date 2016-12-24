@@ -40,7 +40,8 @@ class ShelfLeft:SKNode{
         let pathLeft=shapeShelfLeft()
         shelfLeft = SKShapeNode(path: pathLeft)
         shelfLeft.position=CGPoint.zero
-        shelfLeft.fillColor=SKColor.blue
+        shelfLeft.fillColor = SKColor.brown
+        shelfLeft.alpha = 0.8
         shelfLeft.strokeColor=shelfLeft.fillColor
         addChild(shelfLeft)
         shelfLeft.physicsBody=physicsSelfLeft()
@@ -89,7 +90,8 @@ class ShelfRight:SKNode{
         let pathRight=shapeShelfRight()
         shelfRight = SKShapeNode(path: pathRight)
         shelfRight.position=CGPoint.zero
-        shelfRight.fillColor = SKColor.blue
+        shelfRight.fillColor = SKColor.brown
+        shelfRight.alpha = 0.8
         shelfRight.strokeColor = shelfRight.fillColor
         addChild(shelfRight)
         shelfRight.physicsBody = physicsSelfRight()
