@@ -36,7 +36,7 @@ class Hero {
     var basketJoin: SKPhysicsJointFixed!
     var catchJoin: SKPhysicsJointFixed!
     
-    var orientation: Side = .none
+    var orientation: Side = .left
     
     var texture: SKTexture!
     var walkFramesLeft = [SKTexture]()
@@ -190,15 +190,9 @@ class Hero {
                 arm = createArm(to: .none)
                 arm.position = CGPoint(x: arm.size.width*0.1, y: -arm.size.height*0.5)
                 hero.addChild(arm)
-                armJoin = SKPhysicsJointPin.joint(withBodyA: arm.physicsBody!, bodyB: hero.physicsBody!, anchor: CGPoint.init(x: heroFrame.midX - heroFrame.size.width * 0.16, y: heroFrame.midY))
+                let armJoinNone = SKPhysicsJointFixed.joint(withBodyA: arm.physicsBody!, bodyB: hero.physicsBody!, anchor: CGPoint.init(x: heroFrame.midX - heroFrame.size.width * 0.16, y: heroFrame.midY))
                 
-                armJoin.frictionTorque = 10.0
-                
-                armJoin.shouldEnableLimits = true
-                armJoin.upperAngleLimit = 0.85
-                armJoin.lowerAngleLimit = -1
-                
-                hero.scene!.physicsWorld.add(armJoin)
+                hero.scene!.physicsWorld.add(armJoinNone)
             }
         }
     }

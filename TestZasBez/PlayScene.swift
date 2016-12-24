@@ -153,10 +153,9 @@ class PlayScene: SKScene {
         
         didSet {
             
-            let image = joystickStickImageEnabled ? UIImage(named: "jStick") : nil
+            let image = joystickStickImageEnabled ? UIImage(named: "stickFront") : nil
             moveAnalogStick.stick.image = image
             rotateAnalogStick.stick.image = image
-            //setJoystickStickImageBtn.text = joystickStickImageEnabled ? "Remove Stick Images" : "Set Stick Images"
         }
     }
     
@@ -164,11 +163,9 @@ class PlayScene: SKScene {
         
         didSet {
             
-            let image = joystickSubstrateImageEnabled ? UIImage(named: "jSubstrate") : nil
+            let image = joystickSubstrateImageEnabled ? UIImage(named: "stickBack") : nil
             moveAnalogStick.substrate.image = image
             rotateAnalogStick.substrate.image = image
-           //setJoystickSubstrateImageBtn.text = joystickSubstrateImageEnabled ? "Remove Substrate Images" : "Set Substrate Images"
-            //rotateAnalogStick.
         }
     }
     
@@ -203,6 +200,7 @@ class PlayScene: SKScene {
     
     func restartBtnPressed(_ sender: UIButton!) {
         if let scene = SKScene(fileNamed: "PlayScene") {
+            armSide = .none
             scorelabel?.removeFromSuperview()
             scene.scaleMode = .aspectFill
             touchCap?.removeFromSuperview()
@@ -213,6 +211,7 @@ class PlayScene: SKScene {
     
     func exitBtnPressed(_ sender: UIButton!) {
         if let scene = GameScene.unarchiveFromFile(file: "GameScene") as? GameScene {
+            armSide = .none
             let skView = self.view as SKView!
             skView?.ignoresSiblingOrder = true
             scene.size = (skView?.bounds.size)!
@@ -289,9 +288,14 @@ class PlayScene: SKScene {
         hero = Hero()
         hero.hero.position = .init(x: 0, y: -30)
         hero.add(to: self)
+        hero.turn(to: .none)
+        
         physicsWorld.contactDelegate = self
         view.showsPhysics = true
 
+        
+        joystickStickImageEnabled = true
+        joystickSubstrateImageEnabled = true
         moveAnalogStick.position = CGPoint(x: -self.size.width/2 + 2 * rotateAnalogStick.radius, y: -self.size.height/6 + 5/3 * rotateAnalogStick.radius)
         addChild(moveAnalogStick)
         
